@@ -49,6 +49,13 @@ app.get("/api/wx_openid", async (req, res) => {
   }
 });
 
+// 小程序调用，获取微信 Open ID
+app.get("/api/test", async (req, res) => {
+  res.send({
+    msg:'hello world'
+  })
+});
+
 const port = process.env.PORT || 80;
 
 async function bootstrap() {
