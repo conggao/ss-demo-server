@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const { init: initDB, Counter } = require("./db");
-
 const logger = morgan("tiny");
 
 const app = express();
@@ -51,9 +50,49 @@ app.get("/api/wx_openid", async (req, res) => {
 
 // 小程序调用，获取微信 Open ID
 app.get("/api/test", async (req, res) => {
-  res.send({
-    msg:'hello world'
-  })
+  const { code } = req.query;
+  const { appid, secret, grant_type } = require('./config/wx');
+  const { openid } = await request.get('/sns/jscode2session', {
+    appid,
+    secret,
+    js_code: code,
+    grant_type,
+  });
+  // 3. 查找用户是否已经注册
+  models.user
+      .findOne({
+        where: {
+          openid,
+        },
+      })
+      .then((user) => {
+        if (user) {
+          // 3.2 如果用户已经注册，返回用户信息
+          res.json(
+              new Result({
+                data: user,
+                msg: '登录成功',
+              })
+          );
+        } else {
+          // 3.3 如果用户没有注册，创建用户并返回用户信息
+          const username = randomUserName();
+          models.user
+              .create({
+                nickname: username,
+                openid,
+                avatar: '/uploads/default-avatar.png',
+              })
+              .then((user) => {
+                res.json(
+                    new Result({
+                      data: user,
+                      msg: '登录成功',
+                    })
+                );
+              });
+        }
+      });
 });
 
 const port = process.env.PORT || 80;
