@@ -49,10 +49,10 @@ app.get("/api/wx_openid", async (req, res) => {
 });
 
 // 小程序调用，获取微信 Open ID
-app.get("/api/test", async (req, res) => {
-  const { code } = req.query;
+app.post("/login", async (req, res) => {
+  const code = req.body.code;
   const { appid, secret, grant_type } = require('./config/wx');
-  const { openid } = await request.get('/sns/jscode2session', {
+  const { openid } = await request.get('https://api.weixin.qq.com/sns/jscode2session', {
     appid,
     secret,
     js_code: code,
