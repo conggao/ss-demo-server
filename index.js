@@ -42,15 +42,29 @@ app.get("/api/count", async (req, res) => {
   });
 });
 
-// 小程序调用，获取微信 Open ID
-app.get("/api/wx_openid", async (req, res) => {
+// 创建对局规则
+app.post("/api/createMatchRule", async (req, res) => {
   if (req.headers["x-wx-source"]) {
+    const {team_count, team_member_count} = req.body;
     let createMatchRuleRes = await request.post('https://api.weixin.qq.com/wxa/business/gamematch/creatematchrule', {
-      team_count: 2,
-      team_member_count: 1
+      team_count: team_count,
+      team_member_count: team_member_count
     })
     res.send(createMatchRuleRes.match_id);
+    return
   }
+  res.send({error: -1, msg: '非微信环境'})
+});
+
+// 获取所有对局规则
+app.post("/api/getMatchRule", async (req, res) => {
+  if (req.headers["x-wx-source"]) {
+    const {team_count, team_member_count} = req.body;
+    let getMatchRuleRes = await request.post('https://api.weixin.qq.com/wxa/business/gamematch/getallmatchrule')
+    res.send(getMatchRuleRes);
+    return
+  }
+  res.send({error: -1, msg: '非微信环境'})
 });
 
 // 小程序调用，获取微信 Open ID
