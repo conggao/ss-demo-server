@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const {init: initDB, Counter} = require("./db");
-const {request} = require("express");
+const request = require('request')
 const logger = morgan("tiny");
 
 const app = express();
