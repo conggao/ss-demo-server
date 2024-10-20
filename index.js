@@ -45,13 +45,24 @@ app.get("/api/count", async (req, res) => {
 // 创建对局规则
 app.post("/api/createMatchRule", async (req, res) => {
   if (req.headers["x-wx-source"]) {
-    const {team_count, team_member_count} = req.body;
-    let createMatchRuleRes = await request.post('https://api.weixin.qq.com/wxa/business/gamematch/creatematchrule', {
-      team_count: team_count,
-      team_member_count: team_member_count
+    console.log('请求参数', req.body)
+    request({
+      url: 'https://api.weixin.qq.com/wxa/business/gamematch/creatematchrule',
+      method: 'POST',
+      json: true,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(req.body)
+    }, (error, response, body) => {
+      console.log("response************************");
+      console.log(response);
+      console.log("response************************");
+      if (!error && response.statusCode == 200) {
+        console.log(body) // 请求成功的处理逻辑
+        res.send(response.data.match_id);
+      }
     })
-    res.send(createMatchRuleRes.match_id);
-    return
   }
   res.send({error: -1, msg: '非微信环境'})
 });
@@ -59,9 +70,15 @@ app.post("/api/createMatchRule", async (req, res) => {
 // 获取所有对局规则
 app.post("/api/getMatchRule", async (req, res) => {
   if (req.headers["x-wx-source"]) {
-    const {team_count, team_member_count} = req.body;
-    let getMatchRuleRes = await request.post('https://api.weixin.qq.com/wxa/business/gamematch/getallmatchrule')
-    res.send(getMatchRuleRes);
+    await request.post('https://api.weixin.qq.com/wxa/business/gamematch/getallmatchrule', (error, response, body) => {
+      console.log("response************************");
+      console.log(response);
+      console.log("response************************");
+      if (!error && response.statusCode == 200) {
+        console.log(body) // 请求成功的处理逻辑
+        res.send(response.data);
+      }
+    })
     return
   }
   res.send({error: -1, msg: '非微信环境'})
