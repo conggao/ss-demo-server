@@ -43,7 +43,9 @@ app.get("/api/count", async (req, res) => {
 });
 
 // 创建对局规则
-app.post("/api/createMatchRule", (req, res) => {
+// https://developers.weixin.qq.com/minigame/dev/api-backend/open-api/gamematch/gamematch.createMatchRule.html
+// {"team_count":2,"team_member_count":1}
+app.post("/api/createMatchRule", async (req, res) => {
   console.log('请求参数', req.body)
   request({
     url: 'https://api.weixin.qq.com/wxa/business/gamematch/creatematchrule',
@@ -52,7 +54,7 @@ app.post("/api/createMatchRule", (req, res) => {
     headers: {
       "content-type": "application/json",
     },
-    body: JSON.stringify(req.body)
+    body: req.body
   }, (error, response, body) => {
     console.log("response************************");
     console.log(response);
@@ -65,7 +67,7 @@ app.post("/api/createMatchRule", (req, res) => {
 });
 
 // 获取所有对局规则
-app.post("/api/getMatchRule", async (req, res) => {
+app.post("/api/getMatchRule", (req, res) => {
   request.post('https://api.weixin.qq.com/wxa/business/gamematch/getallmatchrule', (error, response, body) => {
     console.log("response************************");
     console.log(response);
@@ -75,6 +77,7 @@ app.post("/api/getMatchRule", async (req, res) => {
       res.send(response.data);
     }
   })
+  return
 });
 
 // 小程序调用，获取微信 Open ID
