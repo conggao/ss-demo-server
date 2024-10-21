@@ -54,7 +54,7 @@ app.post("/api/createMatchRule", async (req, res) => {
     headers: {
       "content-type": "application/json",
     },
-    body: JSON.stringify(req.body)
+    body: req.body
   }, (error, response, body) => {
     console.log("response************************");
     console.log(response);
