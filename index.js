@@ -75,11 +75,11 @@ app.post("/api/createMatchRule", async (req, res) => {
 
 
 // 获取所有对局规则
-app.post("/api/createMatchRule", async (req, res) => {
+app.post("/api/getAllMatchRule", async (req, res) => {
   console.log('请求参数', req.body);
 
   try {
-    const response = await axios.post('https://api.weixin.qq.com/wxa/business/gamematch/creatematchrule', req.body, {
+    const response = await axios.post('https://api.weixin.qq.com/wxa/business/gamematch/getallmatchrule', req.body, {
       headers: {
         "content-type": "application/json",
       },
