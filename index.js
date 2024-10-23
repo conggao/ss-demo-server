@@ -103,7 +103,8 @@ app.post("/api/createMatchRule", async (req, res) => {
   }
 });
 // 修改对局规则打开状态
-app.post("/api/createMatchRule", async (req, res) => {
+// {"match_id":"","open_state":1}
+app.post("/api/setMatchOpenState", async (req, res) => {
   console.log('请求参数', req.body);
 
   try {
