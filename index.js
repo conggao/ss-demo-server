@@ -102,7 +102,34 @@ app.post("/api/createMatchRule", async (req, res) => {
     res.status(500).send("服务器内部错误");
   }
 });
+// 修改对局规则打开状态
+app.post("/api/createMatchRule", async (req, res) => {
+  console.log('请求参数', req.body);
 
+  try {
+    const response = await axios.post('https://api.weixin.qq.com/wxa/business/gamematch/setmatchopenstate', req.body, {
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+
+    console.log("response************************");
+    console.log(response.data); // axios返回的数据在data属性中
+    console.log("response************************");
+
+    if (response.status === 200) {
+      console.log(response.data); // 请求成功的处理逻辑
+      res.send(response.data.match_id); // 发送match_id给客户端
+    } else {
+      // 处理非200状态码的情况
+      res.status(response.status).send(response.data);
+    }
+  } catch (error) {
+    // 处理请求错误
+    console.error("请求发生错误:", error);
+    res.status(500).send("服务器内部错误");
+  }
+});
 
 // 小程序调用，获取微信 Open ID
 app.get("/api/test", async (req, res) => {
