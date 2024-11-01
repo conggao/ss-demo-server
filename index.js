@@ -44,12 +44,41 @@ app.get("/api/count", async (req, res) => {
 
 // 创建对局规则
 // https://developers.weixin.qq.com/minigame/dev/api-backend/open-api/gamematch/gamematch.createMatchRule.html
-// {"team_count":2,"team_member_count":1}
+// {"team_count":2,"team_member_count":1,"need_room_service_info":1}
 app.post("/api/createMatchRule", async (req, res) => {
   console.log('请求参数', req.body);
 
   try {
     const response = await axios.post('https://api.weixin.qq.com/wxa/business/gamematch/creatematchrule', req.body, {
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+
+    console.log("response************************");
+    console.log(response.data); // axios返回的数据在data属性中
+    console.log("response************************");
+
+    if (response.status === 200) {
+      console.log(response.data); // 请求成功的处理逻辑
+      res.send(response.data.match_id); // 发送match_id给客户端
+    } else {
+      // 处理非200状态码的情况
+      res.status(response.status).send(response.data);
+    }
+  } catch (error) {
+    // 处理请求错误
+    console.error("请求发生错误:", error);
+    res.status(500).send("服务器内部错误");
+  }
+});
+
+// 更改对局规则
+app.post("/api/updateMatchRule", async (req, res) => {
+  console.log('请求参数', req.body);
+
+  try {
+    const response = await axios.post('https://api.weixin.qq.com/wxa/business/gamematch/updatematchrule', req.body, {
       headers: {
         "content-type": "application/json",
       },
